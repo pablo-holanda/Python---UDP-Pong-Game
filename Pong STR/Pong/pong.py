@@ -11,6 +11,8 @@ PORT = 5000 # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 dest = (HOST, PORT)
 
+player = ''
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -101,9 +103,19 @@ class Ui_Pong(QtGui.QWidget):
         self.label_4.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:72pt;\">0</span></p></body></html>", None))
         self.label.setText(_translate("Pong", "IP Server:", None))
         self.radioButton.setText(_translate("Pong", "Jogador 1", None))
+        self.radioButton.clicked.connect(self.playerSelect1)
         self.radioButton_2.setText(_translate("Pong", "Jogador 2", None))
+        self.radioButton_2.clicked.connect(self.playerSelect2)
         self.pushButton.setText(_translate("Pong", "Conectar", None))
         self.pushButton.clicked.connect(self.connectToServer)
+
+    def playerSelect1(self):
+        global player
+        player = '1'
+
+    def playerSelect2(self):
+        global  player
+        player = '2'
 
     def connectToServer(self):
         ipServidor = self.lineEdit.text()
@@ -116,9 +128,11 @@ class Ui_Pong(QtGui.QWidget):
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Right: 
-            udp.sendto ("Direita", dest)
+            msg = player+' '+'1'
+            udp.sendto (msg, dest)
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Left: 
-            udp.sendto ("Esquerda", dest)
+            msg = player+ ' ' +'2'
+            udp.sendto (msg, dest)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
