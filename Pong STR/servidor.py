@@ -1,8 +1,8 @@
 import socket
 #import serial
 
-HOST = '127.0.0.1'     # Endereco IP do Servidor
-PORT = 5000            # Porta que o Servidor esta
+HOST = socket.gethostbyname(socket.gethostname())
+PORT = 2020            # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 orig = (HOST, PORT)
 udp.bind(orig)
