@@ -10,7 +10,7 @@ HOST = ''  # Endereco IP do Servidor
 PORT = 2020 # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 dest = (HOST, PORT)
-
+posi = 3
 player = ''
 
 try:
@@ -111,11 +111,11 @@ class Ui_Pong(QtGui.QWidget):
 
     def playerSelect1(self):
         global player
-        player = '1'
+        player = '0'
 
     def playerSelect2(self):
         global  player
-        player = '2'
+        player = '1'
 
     def connectToServer(self):
         ipServidor = self.lineEdit.text()
@@ -130,12 +130,19 @@ class Ui_Pong(QtGui.QWidget):
         self.setFocus(False)
 
     def keyPressEvent(self, event):
+        global posi
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Right: 
-            msg = player+' '+'1'
-            udp.sendto(msg, dest)
+            if posi >= 0 and posi < 6:
+                posi = posi + 1
+                msg = player+''+('{}'.format(posi))
+                print msg
+                udp.sendto(msg, dest)
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Left: 
-            msg = player+ ' ' +'2'
-            udp.sendto (msg, dest)
+            if posi > 0 and posi <= 6:
+                posi = posi - 1
+                msg = player+''+('{}'.format(posi))
+                print msg
+                udp.sendto(msg, dest)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
