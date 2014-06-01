@@ -1,9 +1,13 @@
 import socket
+#import serial
+
 HOST = '127.0.0.1'     # Endereco IP do Servidor
 PORT = 5000            # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 orig = (HOST, PORT)
 udp.bind(orig)
+
+#ser = serial.Serial('/dev/tty.HC-06-DevB', 9600)
 
 while True:
    msg, cliente = udp.recvfrom(1024)
@@ -12,4 +16,6 @@ while True:
    jogador = mensagem[0]
    sentido = mensagem[1]
    print('Jogador: {}'.format(jogador) + ('  -  ') + ('Sentido: {}'.format(sentido)))
+   #ser.write('L')
+   #udp.sendto("10", cliente)
 udp.close()

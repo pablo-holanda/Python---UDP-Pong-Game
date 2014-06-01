@@ -7,7 +7,7 @@ import time
 import socket
 
 HOST = ''  # Endereco IP do Servidor
-PORT = 5000 # Porta que o Servidor esta
+PORT = 2020 # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 dest = (HOST, PORT)
 
@@ -120,16 +120,19 @@ class Ui_Pong(QtGui.QWidget):
     def connectToServer(self):
         ipServidor = self.lineEdit.text()
         self.label_6.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt;\">Conectando ao servidor...</span></p></body></html>", None))
+        global HOST
+        HOST = ipServidor
         global dest
         dest = (HOST, PORT)
 
         QtCore.QTimer.singleShot(1000, lambda: self.label_6.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt;\">Conexão realizada com SUCESSO</span></p></body></html>", None)))
-        self.lineEdit.clearFocus()
+        #self.lineEdit.clearFocus()
+        self.setFocus(False)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Right: 
             msg = player+' '+'1'
-            udp.sendto (msg, dest)
+            udp.sendto(msg, dest)
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Left: 
             msg = player+ ' ' +'2'
             udp.sendto (msg, dest)
