@@ -1,13 +1,14 @@
 import socket
-import serial
+#import serial
 
-HOST = socket.gethostbyname(socket.gethostname())
+#HOST = socket.gethostbyname(socket.gethostname())
+HOST = '127.0.0.1'
 PORT = 2020	#Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 orig = (HOST, PORT)
 udp.bind(orig)
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+#ser = serial.Serial('/dev/ttyACM0', 9600)
 
 while True:
    msg, cliente = udp.recvfrom(1024)
@@ -17,6 +18,6 @@ while True:
    #sentido = mensagem[1]
    #print('Jogador: {}'.format(jogador) + ('  -  ') + ('Sentido: {}'.format(sentido)))
    ser.write(msg)
-   print msg
+   #print msg
    #udp.sendto("10", cliente)
 udp.close()

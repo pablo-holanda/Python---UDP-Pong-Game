@@ -10,7 +10,6 @@ HOST = ''  # Endereco IP do Servidor
 PORT = 2020 # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 dest = (HOST, PORT)
-posi = 3
 player = ''
 
 try:
@@ -130,17 +129,26 @@ class Ui_Pong(QtGui.QWidget):
         self.setFocus(False)
 
     def keyPressEvent(self, event):
-        global posi
+
+        #Posi ++
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Right: 
-            if posi >= 0 and posi < 6:
-                posi = posi + 1
-                msg = player+''+('{}'.format(posi))
+            if player == '0':
+                msg = '1'
                 print msg
                 udp.sendto(msg, dest)
+            else:
+                msg = '3'
+                print msg
+                udp.sendto(msg, dest)
+
+        #Posi --
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Left: 
-            if posi > 0 and posi <= 6:
-                posi = posi - 1
-                msg = player+''+('{}'.format(posi))
+            if player == '0':
+                msg = '0'
+                print msg
+                udp.sendto(msg, dest)
+            else:
+                msg = '2'
                 print msg
                 udp.sendto(msg, dest)
 
