@@ -5,12 +5,15 @@ from PyQt4 import QtCore, QtGui
 import sys
 import time
 import socket
+import thread
 
 HOST = ''  # Endereco IP do Servidor
 PORT = 2020 # Porta que o Servidor esta
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 dest = (HOST, PORT)
-player = ''
+player = ""
+placar1 = "0"
+placar2 = "0"
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -110,11 +113,15 @@ class Ui_Pong(QtGui.QWidget):
 
     def playerSelect1(self):
         global player
-        player = '0'
+        player = "8"
 
     def playerSelect2(self):
         global  player
-        player = '1'
+        player = "9"
+
+    def atualizarPlacar(self):
+            self.label_2.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:48pt;\">"+ placar1+"</span></p></body></html>", None))
+            self.label_4.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:48pt;\">"+ placar2+"</span></p></body></html>", None))
 
     def connectToServer(self):
         ipServidor = self.lineEdit.text()
@@ -123,33 +130,39 @@ class Ui_Pong(QtGui.QWidget):
         HOST = ipServidor
         global dest
         dest = (HOST, PORT)
-
         QtCore.QTimer.singleShot(1000, lambda: self.label_6.setText(_translate("Pong", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt;\">Conexão realizada com SUCESSO</span></p></body></html>", None)))
-        #self.lineEdit.clearFocus()
+        udp.sendto(player, dest)
         self.setFocus(False)
+    
+    def receberUDP():
+        while True:
+            global placar1
+            global placar2
+            msg = udp.recv(1024)
+            mensagem = msg.split()
+            print mensagem
+            placar1 = mensagem[0]
+            placar2 = mensagem[1]
+
+    thread.start_new_thread(receberUDP,())
 
     def keyPressEvent(self, event):
-
+        self.atualizarPlacar()
         #Posi ++
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Right: 
-            if player == '0':
+            if player == "8":
                 msg = '1'
-                print msg
                 udp.sendto(msg, dest)
             else:
                 msg = '3'
-                print msg
                 udp.sendto(msg, dest)
-
         #Posi --
         if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_Left: 
-            if player == '0':
+            if player == "8":
                 msg = '0'
-                print msg
                 udp.sendto(msg, dest)
             else:
                 msg = '2'
-                print msg
                 udp.sendto(msg, dest)
 
 if __name__ == '__main__':
